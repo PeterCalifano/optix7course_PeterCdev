@@ -14,6 +14,10 @@
 # limitations under the License.                                           #
 # ======================================================================== #
 
+set(CMAKE_C_COMPILER gcc-11)
+set(CMAKE_CXX_COMPILER g++-11)
+set(CMAKE_CUDA_COMPILER nvcc)
+
 if (POLICY CMP0048)
   cmake_policy(SET CMP0048 NEW)
 endif (POLICY CMP0048)
