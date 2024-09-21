@@ -27,6 +27,11 @@ add_executable(ex02_pipelineAndRayGen
   SampleRenderer.cpp
   main.cpp
   )
+
+  message("CUDA_LIBRARIES: ${CUDA_LIBRARIES}")
+  message("CUDA_CUDA_LIBRARY: ${CUDA_CUDA_LIBRARY}")
+  message("optix_LIBRARY: ${optix_LIBRARY}")
+
 target_link_libraries(ex02_pipelineAndRayGen
   gdt
   ${optix_LIBRARY}
