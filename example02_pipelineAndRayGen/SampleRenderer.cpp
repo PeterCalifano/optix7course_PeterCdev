@@ -378,7 +378,7 @@ namespace osc {
                             /*! dimensions of the launch: */
                             launchParams.fbSize.x,
                             launchParams.fbSize.y,
-                            1
+                            1 // Depth --> TBC: this defines the shape of the frame buffer, e.g. for multispectral
                             ));
     // sync - make sure the frame is rendered before we download and
     // display (obviously, for a high-performance application you
