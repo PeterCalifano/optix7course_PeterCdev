@@ -90,7 +90,7 @@ namespace osc {
     const int b = ((ix+iy) % 256);
 
     // convert to 32-bit rgba value (we explicitly set alpha to 0xff
-    // to make stb_image_write happy ...
+    // to make stb_image_write happy ...)
     const uint32_t rgba = 0xff000000
       | (r<<0) | (g<<8) | (b<<16);
 
