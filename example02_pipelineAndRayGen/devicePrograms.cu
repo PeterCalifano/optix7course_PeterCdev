@@ -75,6 +75,8 @@ namespace osc {
              optixLaunchParams.fbSize.x,
              optixLaunchParams.fbSize.y);
       printf("############################################\n");
+
+      printf("Frame buffer memory address: %p\n", optixLaunchParams.colorBuffer);
   }
 
     // ------------------------------------------------------------------

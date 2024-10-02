@@ -62,7 +62,7 @@ namespace osc {
     
     template<typename T>
     void upload(const T *t, size_t count)
-    {
+    { 
       assert(d_ptr != nullptr);
       assert(sizeInBytes == count*sizeof(T));
       CUDA_CHECK(Memcpy(d_ptr, (void *)t,
@@ -71,7 +71,8 @@ namespace osc {
     
     template<typename T>
     void download(T *t, size_t count)
-    {
+    { 
+      printf("d_ptr: %p\n",d_ptr);
       assert(d_ptr != nullptr);
       assert(sizeInBytes == count*sizeof(T));
       CUDA_CHECK(Memcpy((void *)t, d_ptr,
