@@ -24,20 +24,30 @@
 
 namespace gdt {
 
-  template<typename T> struct long_type_of { typedef T type; };
+  template<typename T> struct long_type_of { typedef T type; }; // Definition of trait "long_type_of"
+
+  // Full specialization of long_type_of trait
   template<> struct long_type_of<int32_t>  { typedef int64_t  type; };
   template<> struct long_type_of<uint32_t> { typedef uint64_t type; };
   
+
+  // Vector of generic size N with T indicating the numerical precision
+  // Note: GDT_INTERFACE expands to empty string (hardcoded). Must be modified for Windows.
   template<typename T, int N>
   struct GDT_INTERFACE vec_t { T t[N]; };
 
-
+  // Note by PC: this is very similar to what Eigen implements to manage linear algebra operations.
+  // That is, using type traits.
   template<typename ScalarTypeA, typename ScalarTypeB> struct BinaryOpResultType;
 
   // Binary Result type: scalar type with itself always returns same type
-  template<typename ScalarType>
-  struct BinaryOpResultType<ScalarType,ScalarType> { typedef ScalarType type; };
+  template <typename ScalarType> // Partial specialization of BinaryOpResultType
+  struct BinaryOpResultType<ScalarType, ScalarType>
+  {
+    typedef ScalarType type;
+  };
 
+  // Full specializations of BinaryOpResultType type
   template<> struct BinaryOpResultType<int,float> { typedef float type; };
   template<> struct BinaryOpResultType<float,int> { typedef float type; };
   template<> struct BinaryOpResultType<unsigned int,float> { typedef float type; };
@@ -134,7 +144,7 @@ namespace gdt {
     inline __both__ vec_t() {}
     inline __both__ vec_t(const T &t) : x(t), y(t), z(t) {}
     inline __both__ vec_t(const T &_x, const T &_y, const T &_z) : x(_x), y(_y), z(_z) {}
-#ifdef __CUDACC__
+#ifdef __CUDACC__ // Implementations specific for CUDA library
     inline __both__ vec_t(const int3 &v) : x(v.x), y(v.y), z(v.z) {}
     inline __both__ vec_t(const uint3 &v) : x(v.x), y(v.y), z(v.z) {}
     inline __both__ vec_t(const float3 &v) : x(v.x), y(v.y), z(v.z) {}
@@ -173,7 +183,8 @@ namespace gdt {
   };
 
   // ------------------------------------------------------------------
-  // vec3a
+  // vec3a (PC: what is this? Really don't get the meaning of it.
+  // Perhaps just a convenience definitions for a 3 fixed-size vector?
   // ------------------------------------------------------------------
   template<typename T>
   struct GDT_INTERFACE vec3a_t : public vec_t<T,3> {
@@ -188,7 +199,7 @@ namespace gdt {
   };
   
   // ------------------------------------------------------------------
-  // vec4
+  // vec4 (Note by PC: Vector of fixed size 4)
   // ------------------------------------------------------------------
   template<typename T>
   struct GDT_INTERFACE vec_t<T,4> {
@@ -347,6 +358,17 @@ namespace gdt {
   // default instantiations
   // =======================================================
   
+  // DevNotes by PC: 
+  // 1) need to check what the ##t are used for? Seems like a substitution MACRO!
+  // 2) all operations between vec<t> types are "hardcoded" for the specific size.
+  //    vecN implementation requires custom code for handling those. But consider that
+  //    they will not be run in parallel because each vecN is managed by a single thread by default.
+  //    Parallelization of the computation loop would only be possible host-side kernel-based calls.
+  // Bottom line: specialize type (using templates) or inherit (using polymorphism) to define operations for vecN.
+  //    Need to implement all of those, including operators.
+
+// Note that _define_vec_types substitutes inputs in # or T to write the "usings"
+// These just defines convenience types for vec<t> types, like vec2c for vec_t<int8_t, 2>
 #define _define_vec_types(T,t)    \
 using vec2##t = vec_t<T,2>; \
 using vec3##t = vec_t<T,3>; \
@@ -370,8 +392,8 @@ using vec3##t##a = vec3a_t<T>; \
   _define_vec_types(float,f);
   _define_vec_types(double,d);
   
-#undef _define_vec_types
-  
+#undef _define_vec_types 
+// Good practice: undefine preprocessors directives which are no longer useful
 } // ::gdt
 
 
