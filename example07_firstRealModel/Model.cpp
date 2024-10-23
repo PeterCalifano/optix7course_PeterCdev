@@ -99,7 +99,7 @@ namespace osc {
                          &materials,
                          &err,
                          &err,
-						 objFile.c_str(),
+						            objFile.c_str(),
                          mtlDir.c_str(),
                          /* triangulate */true);
     if (!readOK) {
@@ -144,6 +144,72 @@ namespace osc {
 
     // of course, you should be using tbb::parallel_for for stuff
     // like this:
+    for (auto mesh : model->meshes)
+      for (auto vtx : mesh->vertex)
+        model->bounds.extend(vtx);
+
+    std::cout << "created a total of " << model->meshes.size() << " meshes" << std::endl;
+    return model;
+  }
+
+  Model *loadOBJonly(const std::string &objFile)
+  {
+    Model *model = new Model;
+
+    const std::string mtlDir = objFile.substr(0, objFile.rfind('/') + 1);
+    PRINT(mtlDir);
+
+    tinyobj::attrib_t attributes;
+    std::vector<tinyobj::shape_t> shapes;
+    std::vector<tinyobj::material_t> materials;
+    std::string err = "";
+
+    bool readOK = tinyobj::LoadObj(&attributes,
+                                   &shapes,
+                                   nullptr, // No need for materials vector
+                                   &err,
+                                   &err,
+                                   objFile.c_str(),
+                                   nullptr, // Skip loading materials by passing nullptr for mtlDir
+                                   /* triangulate */ true);
+    if (!readOK)
+    {
+      throw std::runtime_error("Could not read OBJ model from " + objFile + ":" + mtlDir + " : " + err);
+    }
+
+    std::cout << "Done loading obj file - found " << shapes.size() << " shapes" << std::endl;
+
+    for (int shapeID = 0; shapeID < (int)shapes.size(); shapeID++)
+    {
+      tinyobj::shape_t &shape = shapes[shapeID];
+
+      std::map<tinyobj::index_t, int> knownVertices;
+      TriangleMesh *mesh = new TriangleMesh;
+
+      for (int faceID = 0; faceID < shape.mesh.num_face_vertices.size(); faceID++)
+      {
+        // Load the triangle vertices without checking material IDs
+        tinyobj::index_t idx0 = shape.mesh.indices[3 * faceID + 0];
+        tinyobj::index_t idx1 = shape.mesh.indices[3 * faceID + 1];
+        tinyobj::index_t idx2 = shape.mesh.indices[3 * faceID + 2];
+
+        vec3i idx(addVertex(mesh, attributes, idx0, knownVertices),
+                  addVertex(mesh, attributes, idx1, knownVertices),
+                  addVertex(mesh, attributes, idx2, knownVertices));
+        mesh->index.push_back(idx);
+
+        // Set default diffuse color or skip color handling if not needed
+        // For example, set a default color like white or leave it empty
+        mesh->diffuse = vec3f(1.0f, 1.0f, 1.0f); // Default to white
+      }
+
+      if (mesh->vertex.empty())
+        delete mesh;
+      else
+        model->meshes.push_back(mesh);
+    }
+
+    // Calculate the bounding box for the model
     for (auto mesh : model->meshes)
       for (auto vtx : mesh->vertex)
         model->bounds.extend(vtx);

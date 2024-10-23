@@ -483,6 +483,8 @@ namespace osc {
       // all meshes use the same code, so all same hit group
       OPTIX_CHECK(optixSbtRecordPackHeader(hitgroupPGs[0],&rec));
       rec.data.color  = model->meshes[meshID]->diffuse;
+      //rec.data.color = gdt::vec3f{500.0f, 100.0f, 100.0f}; // Gray colour
+
       rec.data.vertex = (vec3f*)vertexBuffer[meshID].d_pointer();
       rec.data.index  = (vec3i*)indexBuffer[meshID].d_pointer();
       hitgroupRecords.push_back(rec);

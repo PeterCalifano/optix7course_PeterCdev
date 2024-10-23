@@ -113,19 +113,19 @@ namespace osc {
   extern "C" int main(int ac, char **av)
   {
     try {
-      Model *model = loadOBJ(
+      Model *model = loadOBJonly(
 #ifdef _WIN32
-      // on windows, visual studio creates _two_ levels of build dir
-      // (x86/Release)
-      "../../models/sponza.obj"
+          // on windows, visual studio creates _two_ levels of build dir
+          // (x86/Release)
+          "../../models/sponza.obj"
 #else
-      // on linux, common practice is to have ONE level of build dir
-      // (say, <project>/build/)...
-      "../models/sponza.obj"
+          // on linux, common practice is to have ONE level of build dir
+          // (say, <project>/build/)...
+          "/home/peterc/devDir/nav-backend/simulationCodes/data/SPICE_kernels/Bennu/Bennu_v20_200k.obj"
 #endif
-                             );
-      Camera camera = { /*from*/vec3f(-1293.07f, 154.681f, -0.7304f),
-                        /* at */model->bounds.center()-vec3f(0,400,0),
+      );
+      Camera camera = { /*from*/vec3f(1.0f, 1.0f, 1.0f),
+                        /* at */model->bounds.center(),
                         /* up */vec3f(0.f,1.f,0.f) };
       // something approximating the scale of the world, so the
       // camera knows how much to move for any given user interaction:
