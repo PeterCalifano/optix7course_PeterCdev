@@ -114,15 +114,9 @@ namespace osc {
   {
     try {
       Model *model = loadOBJonly(
-#ifdef _WIN32
-          // on windows, visual studio creates _two_ levels of build dir
-          // (x86/Release)
-          "../../models/sponza.obj"
-#else
           // on linux, common practice is to have ONE level of build dir
           // (say, <project>/build/)...
           "/home/peterc/devDir/nav-backend/simulationCodes/data/SPICE_kernels/Bennu/Bennu_v20_200k.obj"
-#endif
       );
       Camera camera = { /*from*/vec3f(1.0f, 1.0f, 1.0f),
                         /* at */model->bounds.center(),

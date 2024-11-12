@@ -111,7 +111,11 @@ namespace osc
     for (auto &c : fileName)
       if (c == '\\')
         c = '/';
-    fileName = modelPath + "/" + fileName;
+    
+    if (modelPath != "")
+      fileName = modelPath + "/" + fileName;
+    else
+      fileName = inFileName;
 
     vec2i res;
     int comp;
@@ -285,7 +289,7 @@ namespace osc
           mesh->diffuseTextureID = loadTexture(model,
                                                knownTextures,
                                                textureMapFilePath,
-                                               objFilePath);
+                                               "");
         }
       }
 
