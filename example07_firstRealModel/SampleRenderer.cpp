@@ -103,7 +103,10 @@ namespace osc {
     std::vector<CUdeviceptr> d_indices(model->meshes.size());
     std::vector<uint32_t> triangleInputFlags(model->meshes.size());
 
-    for (int meshID=0;meshID<model->meshes.size();meshID++) {
+    for (int meshID=0;meshID < model->meshes.size();meshID++) {
+
+      printf("\rLoading mesh ID%d into GAS input...", meshID);
+
       // upload the model to the device: the builder
       TriangleMesh &mesh = *model->meshes[meshID];
       vertexBuffer[meshID].alloc_and_upload(mesh.vertex);
@@ -138,6 +141,9 @@ namespace osc {
       triangleInput[meshID].triangleArray.sbtIndexOffsetSizeInBytes   = 0; 
       triangleInput[meshID].triangleArray.sbtIndexOffsetStrideInBytes = 0; 
     }
+
+    printf("\nMesh loading into CUDAbuffers completed.\n");
+
     // ==================================================================
     // BLAS setup
     // ==================================================================
@@ -293,7 +299,7 @@ namespace osc {
     pipelineCompileOptions.exceptionFlags     = OPTIX_EXCEPTION_FLAG_NONE;
     pipelineCompileOptions.pipelineLaunchParamsVariableName = "optixLaunchParams";
       
-    pipelineLinkOptions.maxTraceDepth          = 2;
+    pipelineLinkOptions.maxTraceDepth          = 2; 
       
     const std::string ptxCode = embedded_ptx_code;
       
@@ -478,8 +484,10 @@ namespace osc {
     // ------------------------------------------------------------------
     int numObjects = (int)model->meshes.size();
     std::vector<HitgroupRecord> hitgroupRecords;
+
     for (int meshID=0;meshID<numObjects;meshID++) {
       HitgroupRecord rec;
+      
       // all meshes use the same code, so all same hit group
       OPTIX_CHECK(optixSbtRecordPackHeader(hitgroupPGs[0],&rec));
       rec.data.color  = model->meshes[meshID]->diffuse;

@@ -164,6 +164,7 @@ namespace osc {
       TriangleMesh &mesh = *model->meshes[meshID];
       vertexBuffer[meshID].alloc_and_upload(mesh.vertex);
       indexBuffer[meshID].alloc_and_upload(mesh.index);
+
       if (!mesh.normal.empty())
         normalBuffer[meshID].alloc_and_upload(mesh.normal);
       if (!mesh.texcoord.empty())
@@ -545,12 +546,14 @@ namespace osc {
       // all meshes use the same code, so all same hit group
       OPTIX_CHECK(optixSbtRecordPackHeader(hitgroupPGs[0],&rec));
       rec.data.color   = mesh->diffuse;
+
       if (mesh->diffuseTextureID >= 0) {
         rec.data.hasTexture = true;
         rec.data.texture    = textureObjects[mesh->diffuseTextureID];
       } else {
         rec.data.hasTexture = false;
       }
+      
       rec.data.index    = (vec3i*)indexBuffer[meshID].d_pointer();
       rec.data.vertex   = (vec3f*)vertexBuffer[meshID].d_pointer();
       rec.data.normal   = (vec3f*)normalBuffer[meshID].d_pointer();
