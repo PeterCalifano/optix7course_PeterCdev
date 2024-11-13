@@ -21,8 +21,9 @@
 #include <GL/gl.h>
 
 #define TEXTURE_MAP_FILEPATH "/home/peterc/devDir/nav-backend/simulationCodes/data/SPICE_kernels/Bennu/Bennu_OSIRIS_texture_5cm_v1.jpg"
-#define OBJ_PATH "/home/peterc/devDir/nav-backend/simulationCodes/data/SPICE_kernels/Bennu/Bennu_v20_200k.obj"
-//#define OBJ_PATH "/home/peterc/devDir/nav-backend/simulationCodes/data/SPICE_kernels/Bennu/Bennu-Post-TAG-DTM.obj"
+//#define OBJ_PATH "/home/peterc/devDir/nav-backend/simulationCodes/data/SPICE_kernels/Bennu/Bennu_v20_200k.obj"
+// #define OBJ_PATH "/home/peterc/devDir/nav-backend/simulationCodes/data/SPICE_kernels/Bennu/Bennu-Post-TAG-DTM.obj"
+#define OBJ_PATH "/home/peterc/devDir/nav-backend/simulationCodes/data/SPICE_kernels/Bennu/bennu_OLA_v21_PTM_very-high.obj"
 
 /*! \namespace osc - Optix Siggraph Course */
 namespace osc {
@@ -127,7 +128,7 @@ namespace osc {
       // camera knows how much to move for any given user interaction:
       const float worldScale = length(model->bounds.span());
 
-      SampleWindow *window = new SampleWindow("Bennu 200K triangles (with RGBA texture map)- running with OptiX API",
+      SampleWindow *window = new SampleWindow("Bennu 17.9M polygons - running with OptiX API",
                                               model, camera, worldScale);
       window->run();
       
