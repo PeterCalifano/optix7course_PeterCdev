@@ -20,7 +20,9 @@
 #include "glfWindow/GLFWindow.h"
 #include <GL/gl.h>
 
-#define TEXTURE_MAP_FILEPATH "/home/peterc/devDir/nav-backend/simulationCodes/data/SPICE_kernels/Bennu/Bennu_v20_200k_texture.png"
+#define TEXTURE_MAP_FILEPATH "/home/peterc/devDir/nav-backend/simulationCodes/data/SPICE_kernels/Bennu/Bennu_OSIRIS_texture_5cm_v1.jpg"
+#define OBJ_PATH "/home/peterc/devDir/nav-backend/simulationCodes/data/SPICE_kernels/Bennu/Bennu_v20_200k.obj"
+//#define OBJ_PATH "/home/peterc/devDir/nav-backend/simulationCodes/data/SPICE_kernels/Bennu/Bennu-Post-TAG-DTM.obj"
 
 /*! \namespace osc - Optix Siggraph Course */
 namespace osc {
@@ -116,7 +118,7 @@ namespace osc {
   {
     try {
       Model *model = loadOBJonly(
-          "/home/peterc/devDir/nav-backend/simulationCodes/data/SPICE_kernels/Bennu/Bennu_v20_200k.obj",
+          OBJ_PATH,
           TEXTURE_MAP_FILEPATH);
       Camera camera = {/*from*/ vec3f(1.0f, 1.0f, 1.0f),
                        /* at */ model->bounds.center(),

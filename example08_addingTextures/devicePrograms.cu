@@ -87,6 +87,7 @@ namespace osc {
       N = (1.f-u-v) * sbtData.normal[index.x]
         +         u * sbtData.normal[index.y]
         +         v * sbtData.normal[index.z];
+      printf("DEBUG: SBT shading normal: using it... \n");
     } else {
       const vec3f &A     = sbtData.vertex[index.x];
       const vec3f &B     = sbtData.vertex[index.y];
@@ -100,7 +101,14 @@ namespace osc {
     // available
     // ------------------------------------------------------------------
     vec3f diffuseColor = sbtData.color;
+
+    //printf("DEBUG: has texture: %d \n", sbtData.hasTexture);
+    //printf("DEBUG texcoord: %d \n", sbtData.texcoord);
+
     if (sbtData.hasTexture && sbtData.texcoord) {
+    
+      printf("DEBUG: Hit texture: applying it... \n");
+
       const vec2f tc
         = (1.f-u-v) * sbtData.texcoord[index.x]
         +         u * sbtData.texcoord[index.y]
@@ -136,7 +144,7 @@ namespace osc {
   {
     vec3f &prd = *(vec3f*)getPRD<vec3f>();
     // set to constant white as background color
-    prd = vec3f(1.f);
+    prd = vec3f(0.f);
   }
 
   //------------------------------------------------------------------------------

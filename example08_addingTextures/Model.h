@@ -58,4 +58,5 @@ namespace osc {
   };
 
   Model *loadOBJ(const std::string &objFile);
+  Model *loadOBJonly(const std::string &objFilePath, const std::string &textureMapFilePath);
 }

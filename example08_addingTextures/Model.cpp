@@ -67,6 +67,9 @@ namespace osc
     const vec3f *normal_array = (const vec3f *)attributes.normals.data();
     const vec2f *texcoord_array = (const vec2f *)attributes.texcoords.data();
 
+    //std::cout << "Adding vertex with index " << idx.vertex_index << "and normal: " << normal_array[0] << " " 
+    //          << normal_array[1] << " " << normal_array[2] << "\r";
+
     int newID = (int)mesh->vertex.size();
     knownVertices[idx] = newID;
 
@@ -111,19 +114,25 @@ namespace osc
     for (auto &c : fileName)
       if (c == '\\')
         c = '/';
-    
+
     if (modelPath != "")
       fileName = modelPath + "/" + fileName;
     else
       fileName = inFileName;
 
+    printf("Loading texture '%s' ...", fileName.c_str());
+
     vec2i res;
     int comp;
     unsigned char *image = stbi_load(fileName.c_str(),
                                      &res.x, &res.y, &comp, STBI_rgb_alpha);
+
+    printf("Found image of size %i x %i\n", res.x, res.y);
+
     int textureID = -1;
     if (image)
     {
+      printf("Assigning texture ID %i\n", (int)model->textures.size());
       textureID = (int)model->textures.size();
       Texture *texture = new Texture;
       texture->resolution = res;
@@ -143,6 +152,7 @@ namespace osc
       }
 
       model->textures.push_back(texture);
+      printf("Push back of texture done\n");
     }
     else
     {
@@ -152,6 +162,7 @@ namespace osc
     }
 
     knownTextures[inFileName] = textureID;
+    printf("Returning texture ID %i\n", textureID);
     return textureID;
   }
 
@@ -267,6 +278,7 @@ namespace osc
       std::map<tinyobj::index_t, int> knownVertices;
       TriangleMesh *mesh = new TriangleMesh;
 
+      std::cout << "Number of faces: " << shape.mesh.num_face_vertices.size() << std::endl;
       for (int faceID = 0; faceID < shape.mesh.num_face_vertices.size(); faceID++)
       {
         // Load the triangle vertices without checking material IDs
@@ -282,15 +294,16 @@ namespace osc
         // Set default diffuse color or skip color handling if not needed
         // For example, set a default color like white or leave it empty
         mesh->diffuse = vec3f(1.0f, 1.0f, 1.0f); // Default to white
+      }
 
-        // If provided, load the texture
-        if (textureMapFilePath != "")
-        {
-          mesh->diffuseTextureID = loadTexture(model,
-                                               knownTextures,
-                                               textureMapFilePath,
-                                               "");
-        }
+      // If provided, load the texture
+      if (textureMapFilePath != "")
+      {
+        printf("Loading texture from %s\n", textureMapFilePath.c_str());
+        mesh->diffuseTextureID = loadTexture(model,
+                                             knownTextures,
+                                             textureMapFilePath,
+                                             "");
       }
 
       if (mesh->vertex.empty())
