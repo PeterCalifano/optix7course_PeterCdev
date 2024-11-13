@@ -128,7 +128,7 @@ namespace osc {
       // camera knows how much to move for any given user interaction:
       const float worldScale = length(model->bounds.span());
 
-      SampleWindow *window = new SampleWindow("Bennu 200K triangles (no texture, no shading, intersections only) - running with OptiX API",
+      SampleWindow *window = new SampleWindow("Bennu 17.9M polygons (no texture, no shading, intersections only) - running with OptiX API",
                                               model, camera, worldScale);
       window->run();
       
